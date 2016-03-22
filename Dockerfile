@@ -3,12 +3,12 @@ FROM java:8-jre
 RUN groupadd -r zookeeper && useradd -r -g zookeeper zookeeper
 RUN apt-get install -y ca-certificates curl
 
-ENV ZOOKEEPER_VERSION 3.4.6
+ENV ZOOKEEPER_VERSION 3.4.8
 ENV ZOOKEEPER_URL http://apache.mirrors.pair.com/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz
 ENV ZOOKEEPER_KEY_URL https://www.apache.org/dist/zookeeper/zookeeper-$ZOOKEEPER_VERSION/zookeeper-$ZOOKEEPER_VERSION.tar.gz.asc
 
-# Flavio Junqueira (CODE SIGNING KEY) <fpj@apache.org>
-RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 1D3D275F61D8E2B589C19FD093FB0254D2C80E32
+#Ideally we would not be downloading keys. But at least it's https :(
+RUN curl -SL https://www.apache.org/dist/zookeeper/KEYS -o KEYS && gpg --import KEYS
 
 RUN curl -SL "$ZOOKEEPER_URL" -o zook.tar.gz \
 	&& curl -SL "$ZOOKEEPER_KEY_URL" -o zook.tar.gz.asc \
